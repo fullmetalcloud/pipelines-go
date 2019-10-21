@@ -13,6 +13,7 @@ variables:
   GOROOT: '/usr/local/go1.11' # Go installation path
   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+  imageName: 'pipelines-go-docker'
 
 resources:
 - repo: self
@@ -43,3 +44,19 @@ steps:
 - script: go test -v ./...
   workingDirectory: '$(modulePath)'
   displayName: 'Run tests'
+- task: Docker@2
+  displayName: Build an image
+  inputs:
+    repository: $(imageName)
+    command: build
+    Dockerfile: app/Dockerfile
+- task: Docker@2
+  displayName: Push image
+  inputs:
+    containerRegistry: |
+      $(dockerHub)
+    repository: $(imageName)
+    command: push
+    tags: |
+      test1
+      test2
