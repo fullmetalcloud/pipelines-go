@@ -17,9 +17,6 @@ variables:
 resources:
 - repo: self
 
-variables:
-  tag: '$(Build.BuildId)'
-
 steps:
 - script: |
     mkdir -p '$(GOBIN)'
